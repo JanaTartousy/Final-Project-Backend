@@ -6,7 +6,7 @@ import {
 	updateBooking,
 	deleteBooking,
 } from '../controllers/bookingController.js';
-// import { admin, verifyUser } from '../middleware/auth.js';
+
 
 const router = express.Router();
 

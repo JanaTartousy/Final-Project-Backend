@@ -1,9 +1,6 @@
 import express from "express";
 import {
   getAllAdmins,
-  createAdmin,
-  addAdmin,
-  addSuperAdmin,
   getAdminById,
   updateAdmin,
   deleteAdmin,
@@ -11,37 +8,28 @@ import {
   logout,
   register,
 } from "../controllers/adminController.js";
-
+import { admin, superAdmin } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET /admins
-router.get("/", getAllAdmins);
-
-// POST /admins
-router.post("/", createAdmin);
-
-// add a new admin account
-router.post("/add-admin", addAdmin);
-
-// add a new super admin account
-router.post("/add-super-admin", addSuperAdmin);
+router.get("/", admin, superAdmin, getAllAdmins);
 
 // GET /admins/:adminId
-router.get("/:adminId", getAdminById);
+router.get("/:adminId", admin, superAdmin, getAdminById);
 
 // PUT /admins/:adminId
-router.put("/:adminId", updateAdmin);
+router.put("/:adminId", admin, superAdmin, updateAdmin);
 
 // DELETE /admins/:adminId
-router.delete("/:adminId", deleteAdmin);
+router.delete("/:adminId", admin, superAdmin, deleteAdmin);
 
 // register a new admin account
-router.post("/register", register);
+router.post("/register", admin, superAdmin, register);
 
 // login
-router.post("/login", login);
+router.post("/login", admin, superAdmin, login);
 
 // logout
-router.post("/logout", logout);
+router.post("/logout", admin, superAdmin, logout);
 
 export default router;

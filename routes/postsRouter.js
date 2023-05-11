@@ -5,7 +5,7 @@ import {
 	getPostById,
 	updatePost,
 	deletePost,
-} from '../controllers/postController.js';
+} from '../controllers/postsController.js';
 // import { admin, verifyUser } from '../middleware/auth.js';
 
 const router = express.Router();

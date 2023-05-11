@@ -41,6 +41,6 @@ socialmediaSchema.pre(['find', 'findOne', 'save', 'create'], function () {
 	this.populate(['admin_id']);
 });
 
-const SocialmediaModel = model("Post", socialmediaSchema);
+const SocialmediaModel = model("Socialmedia", socialmediaSchema);
 SocialmediaModel.paginate().then({});
 export default SocialmediaModel;

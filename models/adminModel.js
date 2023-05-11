@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 import mongoosePaginate from 'mongoose-paginate-v2';
 const { Schema, model } = mongoose;
 
@@ -46,6 +47,21 @@ const adminSchema = new Schema(
     collection: "Admin",
   }
 );
+
+// hashing the password
+adminSchema.pre("save", function (next) {
+  bcrypt
+      .genSalt(10)
+      .then((salt) => bcrypt.hash(this.password, salt))
+      .then((hashPassword) => {
+          this.password = hashPassword;
+          next();
+      })
+      .catch((err) => {
+          next(err);
+      });
+});
+
 adminSchema.plugin(mongoosePaginate);
 
 const AdminModel = model("Admin", adminSchema);

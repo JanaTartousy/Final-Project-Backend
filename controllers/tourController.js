@@ -1,121 +1,97 @@
-import Tour from '../models/tourModel.js';
+import Tour from "../models/tourModel.js";
 
 // Get all tours
 export const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find().populate(['admin_id', 'user_id']);
-    res.json(tours);
+    const { page, limit } = req.query;
+    const options = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 10,
+    };
+    const tours = await Tour.paginate({}, options);
+    res.status(200).json(tours);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get tours' });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Create a new tour
+// create a new tour
 export const createTour = async (req, res) => {
   const {
-    admin_id,
-    user_id,
     title,
-    image,
     location,
     price,
     description,
     date,
-    departure,
-    return: returnTime,
+    departure_hour,
+    return_hour,
     instruction,
   } = req.body;
+  const tour = new Tour({
+    title,
+    location,
+    price,
+    description,
+    date,
+    departure_hour,
+    return_hour,
+    instruction,
+  });
 
   try {
-    const tour = await Tour.create({
-      admin_id,
-      user_id,
-      title,
-      image,
-      location,
-      price,
-      description,
-      date,
-      departure,
-      return: returnTime,
-      instruction,
-    });
-    res.status(201).json(tour);
+    const newTour = await tour.save();
+    res.status(201).json(newTour);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create tour' });
+    res.status(400).json({ message: error.message });
   }
 };
 
-// Get tour by ID
+// Get a single tour by ID
 export const getTourById = async (req, res) => {
-  const { tourId } = req.params;
-
   try {
-    const tour = await Tour.findById(tourId).populate(['admin_id', 'user_id']);
+    const tour = await Tour.findById(req.params.tourId);
     if (!tour) {
-      return res.status(404).json({ error: 'Tour not found' });
+      return res.status(404).json({ message: "TOur not found" });
     }
-    res.json(tour);
+    res.status(200).json(tour);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get tour' });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Update tour
+// Update an tour
 export const updateTour = async (req, res) => {
-  const { tourId } = req.params;
-  const {
-    admin_id,
-    user_id,
-    title,
-    image,
-    location,
-    price,
-    description,
-    date,
-    departure,
-    return: returnTime,
-    instruction,
-  } = req.body;
-
   try {
-    const tour = await Tour.findByIdAndUpdate(
-      tourId,
-      {
-        admin_id,
-        user_id,
-        title,
-        image,
-        location,
-        price,
-        description,
-        date,
-        departure,
-        return: returnTime,
-        instruction,
-      },
-      { new: true }
-    ).populate(['admin_id', 'user_id']);
+    const tour = await Tour.findById(req.params.tourId);
     if (!tour) {
-      return res.status(404).json({ error: 'Tour not found' });
+      return res.status(404).json({ message: "Tour not found" });
     }
-    res.json(tour);
+
+    tour.title = req.body.title || tour.title;
+    tour.location = req.body.location || tour.location;
+    tour.price = req.body.price || tour.price;
+    tour.description = req.body.description || tour.description;
+    tour.date = req.body.date || tour.date;
+    tour.departure_hour = req.body.departure_hour || tour.departure_hour;
+    tour.return_hour = req.body.return_hour || tour.return_hour;
+    tour.instruction = req.body.instruction || tour.instruction;
+
+    const updatedTour = await tour.save();
+    res.status(200).json(updatedTour);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update tour' });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// Delete tour
+// Delete a tour
 export const deleteTour = async (req, res) => {
-  const { tourId } = req.params;
-
   try {
-    const tour = await Tour.findByIdAndDelete(tourId);
+    const tour = await Tour.findByIdAndRemove(req.params.tourId);
     if (!tour) {
-      return res.status(404).json({ error: 'Tour not found' });
+      return res.status(404).json({ message: "Tour not found" });
     }
-    res.json({ message: 'Tour deleted successfully' });
+    res.status(200).json({ message: "Tour deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete tour' });
+    res.status(500).json({ message: error.message });
   }
 };

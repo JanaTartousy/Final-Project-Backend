@@ -28,6 +28,6 @@ feedbackSchema.pre(['find', 'findOne', 'save', 'create'], function () {
 	this.populate(['admin_id', 'user_id']);
 });
 
-const FeedbackModel = model("Post", feedbackSchema);
+const FeedbackModel = model("Feedback", feedbackSchema);
 FeedbackModel.paginate().then({});
 export default FeedbackModel;
