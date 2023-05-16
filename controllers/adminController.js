@@ -47,7 +47,7 @@ export async function getAdminById(req, res, next) {
 // register a new admin account (as either admin or super admin)
 export async function register(req, res, next) {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password} = req.body;
     if (!(email && password)) {
       return res.status(400).json({
         success: false,
@@ -55,7 +55,7 @@ export async function register(req, res, next) {
       });
     }
     let role = "admin";
-    if (req.user.role === "superAdmin") {
+    if (req.admin.role === "superAdmin") {
       // If the user making the request is a super admin, they can register a super admin
       role = "superAdmin";
     }
@@ -76,7 +76,7 @@ export async function register(req, res, next) {
           {
             user_id: response._id,
             username,
-            phone,
+            password,
             email,
             role: admin.role,
           },
@@ -203,4 +203,34 @@ export const logout = (req, res) => {
   // For example, invalidate the token or clear session data
 
   res.status(200).json({ success: true, message: "Logout successful" });
-};
+};import multer from "multer";
+
+const imageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads");
+    },
+    filename: function (req, file, cb) {
+        cb(
+            null,
+            file.fieldname + "-" + Date.now() + "." + file.mimetype.split("/")[1]
+        );
+    },
+});
+
+const upload = multer({
+    storage: imageStorage,
+    fileFilter: function (req, file, callback) {
+        if (
+            file.mimetype == "image/png" ||
+            file.mimetype == "image/jpg" ||
+            file.mimetype == "image/jpeg"
+        ) {
+            callback(null, true);
+        } else {
+            console.log("only jpg, jpeg & png file supported");
+            callback(null, false);
+        }
+    },
+}).single("image");
+
+export default upload;

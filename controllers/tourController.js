@@ -15,6 +15,7 @@ export const getAllTours = async (req, res) => {
   }
 };
 
+
 // create a new tour
 export const createTour = async (req, res) => {
   const {
@@ -27,6 +28,7 @@ export const createTour = async (req, res) => {
     return_hour,
     instruction,
   } = req.body;
+
   const tour = new Tour({
     title,
     location,
@@ -39,6 +41,10 @@ export const createTour = async (req, res) => {
   });
 
   try {
+    if (req.file) {
+      tour.image = "/uploads/" + req.file.filename;
+    }
+
     const newTour = await tour.save();
     res.status(201).json(newTour);
   } catch (error) {
@@ -46,12 +52,15 @@ export const createTour = async (req, res) => {
   }
 };
 
+// ...
+
+
 // Get a single tour by ID
 export const getTourById = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.tourId);
     if (!tour) {
-      return res.status(404).json({ message: "TOur not found" });
+      return res.status(404).json({ message: "Tour not found" });
     }
     res.status(200).json(tour);
   } catch (error) {
@@ -76,12 +85,17 @@ export const updateTour = async (req, res) => {
     tour.return_hour = req.body.return_hour || tour.return_hour;
     tour.instruction = req.body.instruction || tour.instruction;
 
+    if (req.file) {
+      tour.image = "/uploads/" + req.file.filename;
+    }
+
     const updatedTour = await tour.save();
     res.status(200).json(updatedTour);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Delete a tour
 export const deleteTour = async (req, res) => {
