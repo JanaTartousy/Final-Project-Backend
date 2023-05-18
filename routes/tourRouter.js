@@ -7,12 +7,13 @@ import {
   deleteTour,
 } from "../controllers/tourController.js";
 import uploadImage from "../middleware/imagesUpload.js"
+import { roleAccess, verifyUser } from "../middleware/auth.js";
 // import { admin, verifyUser } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // GET /tours
-router.get("/", getAllTours);
+router.get("/", verifyUser,roleAccess(["superAdmin","user"]), getAllTours);
 
 // POST /tours
 router.post("/",uploadImage('Tourimage'), createTour);

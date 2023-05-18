@@ -14,6 +14,7 @@ export function verifyUser(req, res, next) {
     } catch (err) {
         return res.status(401).send("Invalid Token");
     }
+    console.log(req.user)
     return next();
 }
 
@@ -28,4 +29,12 @@ export function admin(req, res, next) {
 export function superAdmin(req, res, next) {
     if (req.user.role === "superAdmin") return next();
     else return res.status(401).send("Not Authorized");
+}
+export const roleAccess=(arr)=>{
+    return (req,res,next)=>{
+        if(arr.includes(req.user.role)){
+            return next()
+        }
+            return res.status(401).send({message:"Not Authorized"})
+    }
 }

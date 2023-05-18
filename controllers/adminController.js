@@ -47,31 +47,32 @@ export async function getAdminById(req, res, next) {
 // register a new admin account (as either admin or super admin)
 export async function register(req, res, next) {
   try {
-    const { username, email, password} = req.body;
+    let { username, email, password,image,role} = req.body;
     if (!(email && password)) {
       return res.status(400).json({
         success: false,
         message: "Email is required for registration",
       });
     }
-    let role = "admin";
-    if (req.admin.role === "superAdmin") {
+    if (!req.user?.role === "superAdmin") {
       // If the user making the request is a super admin, they can register a super admin
-      role = "superAdmin";
+      
+      role = "user";
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
     const admin = new Admin({
       username,
       email,
-      password: hashedPassword,
+      password,
       role,
-      image: req.file ? req.file.path : undefined,
+      image:image||"",
     });
 
     await admin
       .save()
       .then((response) => {
+        // const token = "batata"
         const token = jwt.sign(
           {
             user_id: response._id,
@@ -91,12 +92,12 @@ export async function register(req, res, next) {
       .catch((err) => {
         console.log(err);
         if (err.code === 11000) {
-          return res.status(404).json({
+          return res.status(400).json({
             success: false,
             err: "Email   already in use",
           });
         } else {
-          return res.status(404).json({ success: false, err });
+          return res.status(500).json({ success: false, err });
         }
       });
   } catch (err) {
@@ -172,30 +173,44 @@ export const deleteAdmin = async (req, res, next) => {
 };
 
 // Login
-export const login = async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    const admin = await Admin.findOne({ email });
-
-    if (!admin) {
-      return res.status(401).json({ success: false, message: "Invalid email or password" });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ success: false, message: "Invalid email or password" });
-    }
-
-    // Perform additional tasks if needed
-    // For example, create a token and send it in the response
-
-    res.status(200).json({ success: true, message: "Login successful" });
-  } catch (err) {
-    return next(err);
-  }
-};
+export async function login(req, res, next) {
+	try {
+		let { email, password, phone, username } = req.body;
+		if (!(email && password) ) {
+			return res
+				.status(400)
+				.json({ success: false, message: 'All inputs are required' });
+		}
+		await Admin.findOne({ email } ).then(
+			async (response) => {
+				if (
+					response &&
+					(await bcrypt.compare(password, response.password))
+				) {
+					const token = jwt.sign(
+						{
+							user_id: response._id,
+							email: response.email,
+							role: response.role,
+						},
+						process.env.TOKEN_KEY,
+						{ expiresIn: '5h' },
+					);
+					response.password = undefined;
+					// res.cookie("auth_token", token, { maxAge: 5 * 60 * 60 * 1000 });
+					res.status(200).json({ sucess: true, response, token });
+				} else {
+					res.status(400).json({
+						sucess: false,
+						err: 'Invalid Credentials',
+					});
+				}
+			},
+		);
+	} catch (err) {
+		return next(err);
+	}
+}
 
 // Logout
 export const logout = (req, res) => {

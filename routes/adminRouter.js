@@ -24,10 +24,10 @@ router.put("/:adminId", admin, superAdmin, updateAdmin);
 router.delete("/:adminId", admin, superAdmin, deleteAdmin);
 
 // register a new admin account
-router.post("/register", admin, superAdmin, register);
+router.post("/register", register);
 
 // login
-router.post("/login", admin, superAdmin, login);
+router.post("/login", login);
 
 // logout
 router.post("/logout", admin, superAdmin, logout);
