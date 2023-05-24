@@ -35,4 +35,3 @@ postSchema.pre(['find', 'findOne', 'save', 'create'], function () {
 const PostModel = model("Post", postSchema);
 PostModel.paginate().then({});
 export default PostModel;
-``

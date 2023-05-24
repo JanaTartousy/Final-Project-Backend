@@ -19,6 +19,7 @@ export const getAllTours = async (req, res) => {
 // create a new tour
 export const createTour = async (req, res) => {
   const {
+    admin_id,
     title,
     location,
     price,
@@ -30,6 +31,7 @@ export const createTour = async (req, res) => {
   } = req.body;
 
   const tour = new Tour({
+    admin_id,
     title,
     location,
     price,
@@ -52,7 +54,6 @@ export const createTour = async (req, res) => {
   }
 };
 
-// ...
 
 
 // Get a single tour by ID
@@ -75,7 +76,8 @@ export const updateTour = async (req, res) => {
     if (!tour) {
       return res.status(404).json({ message: "Tour not found" });
     }
-
+    
+    tour.admin_id = req.body.admin_id || tour.admin_id;
     tour.title = req.body.title || tour.title;
     tour.location = req.body.location || tour.location;
     tour.price = req.body.price || tour.price;

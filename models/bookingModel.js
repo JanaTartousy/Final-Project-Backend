@@ -4,20 +4,17 @@ const { Schema, model } = mongoose;
 
 const bookingSchema = new Schema(
   {
-    // admin_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Admin",
-    // },
-    // tour_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Tour",
-    // },
-    // user_id: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
+    
+    tour_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tour",
+    },
+    user_id: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
   },
   {
@@ -27,9 +24,9 @@ const bookingSchema = new Schema(
 );
 bookingSchema.plugin(mongoosePaginate);
 
-// bookingSchema.pre(['find', 'findOne', 'save', 'create'], function () {
-// 	this.populate(['admin_id', 'tour_id', 'user_id']);
-// });
+bookingSchema.pre(['find', 'findOne', 'save', 'create'], function () {
+	this.populate(['admin_id', 'tour_id', 'user_id']);
+});
 
 const BookingModel = model("Booking", bookingSchema);
 BookingModel.paginate().then({});

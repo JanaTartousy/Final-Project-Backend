@@ -17,9 +17,10 @@ export const getAllBookings = async (req, res) => {
 
 // create a new booking
 export const createBooking = async (req, res) => {
-  const {  time } = req.body;
+  const { admin_id, tour_id, time } = req.body;
   const booking = new Booking({
-   
+    admin_id,
+    tour_id,
     time,
   });
 
@@ -52,9 +53,8 @@ export const updateBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // booking.admin_id = req.body.admin_id || booking.admin_id;
-    // booking.tour_id = req.body.tour_id || booking.tour_id;
-    // booking.user_id = req.body.user_id || booking.user_id;
+    booking.tour_id = req.body.tour_id || booking.tour_id;
+    booking.user_id = req.body.user_id || booking.user_id;
     booking.time = req.body.time || booking.time;
 
     const updatedBooking = await booking.save();

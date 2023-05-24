@@ -214,8 +214,6 @@ export async function login(req, res, next) {
 
 // Logout
 export const logout = (req, res) => {
-  // Perform any necessary logout actions
-  // For example, invalidate the token or clear session data
 
   res.status(200).json({ success: true, message: "Logout successful" });
 };import multer from "multer";
