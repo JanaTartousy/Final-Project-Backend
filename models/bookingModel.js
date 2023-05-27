@@ -12,7 +12,7 @@ const bookingSchema = new Schema(
     user_id: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Admin",
       },
     ],
 
@@ -25,7 +25,7 @@ const bookingSchema = new Schema(
 bookingSchema.plugin(mongoosePaginate);
 
 bookingSchema.pre(['find', 'findOne', 'save', 'create'], function () {
-	this.populate(['admin_id', 'tour_id', 'user_id']);
+	this.populate([ 'tour_id', 'user_id']);
 });
 
 const BookingModel = model("Booking", bookingSchema);

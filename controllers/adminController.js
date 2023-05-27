@@ -175,7 +175,7 @@ export const deleteAdmin = async (req, res, next) => {
 // Login
 export async function login(req, res, next) {
 	try {
-		let { email, password, phone, username } = req.body;
+		let { email, password, username } = req.body;
 		if (!(email && password) ) {
 			return res
 				.status(400)

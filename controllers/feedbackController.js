@@ -3,10 +3,15 @@ import Feedback from '../models/feedbackModel.js';
 // Get all feedbacks
 export const getAllFeedbacks = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().populate(['admin_id', 'user_id']);
-    res.json(feedbacks);
+    const { page, limit } = req.query;
+    const options = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 10,
+    };
+    const feedback = await Feedback.paginate({}, options);
+    res.status(200).json(feedback);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get feedbacks' });
+    res.status(500).json({ message: error.message });
   }
 };
 

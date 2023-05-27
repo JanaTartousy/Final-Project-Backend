@@ -3,10 +3,15 @@ import Socialmedia from '../models/socialmediaModel.js';
 // Get all social media accounts
 export const getAllSocialMedias = async (req, res) => {
   try {
-    const socialMedias = await Socialmedia.find().populate('admin_id');
-    res.json(socialMedias);
+    const { page, limit } = req.query;
+    const options = {
+      page: parseInt(page, 10) || 1,
+      limit: parseInt(limit, 10) || 10,
+    };
+    const socialmedia = await Socialmedia.paginate({}, options);
+    res.status(200).json(socialmedia);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to get social media accounts' });
+    res.status(500).json({ message: error.message });
   }
 };
 

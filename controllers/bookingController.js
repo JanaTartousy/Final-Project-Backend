@@ -17,11 +17,11 @@ export const getAllBookings = async (req, res) => {
 
 // create a new booking
 export const createBooking = async (req, res) => {
-  const { admin_id, tour_id, time } = req.body;
+  const {  tour_id, user_id } = req.body;
   const booking = new Booking({
-    admin_id,
     tour_id,
-    time,
+    user_id,
+   
   });
 
   try {
@@ -55,7 +55,7 @@ export const updateBooking = async (req, res) => {
 
     booking.tour_id = req.body.tour_id || booking.tour_id;
     booking.user_id = req.body.user_id || booking.user_id;
-    booking.time = req.body.time || booking.time;
+    // booking.time = req.body.time || booking.time;
 
     const updatedBooking = await booking.save();
     res.status(200).json(updatedBooking);
