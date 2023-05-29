@@ -81,10 +81,11 @@ export const updateTour = async (req, res) => {
     tour.departure_hour = req.body.departure_hour || tour.departure_hour;
     tour.return_hour = req.body.return_hour || tour.return_hour;
     tour.instruction = req.body.instruction || tour.instruction;
+    tour.image = req.body.image || tour.image;
 
-    if (req.file) {
-      tour.image = "/uploads/" + req.file.filename;
-    }
+    // if (req.file) {
+    //   tour.image = "/uploads/" + req.file.filename;
+    // }
 
     const updatedTour = await tour.save();
     res.status(200).json(updatedTour);
