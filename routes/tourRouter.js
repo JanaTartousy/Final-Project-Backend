@@ -13,7 +13,7 @@ import { roleAccess, verifyUser } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET /tours
-router.get("/", verifyUser,roleAccess(["superAdmin","user"]), getAllTours);
+router.get("/",  getAllTours);
 
 // POST /tours
 router.post("/",uploadImage('Tourimage'), createTour);

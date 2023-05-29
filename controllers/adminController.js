@@ -175,13 +175,13 @@ export const deleteAdmin = async (req, res, next) => {
 // Login
 export async function login(req, res, next) {
 	try {
-		let { email, password, username } = req.body;
-		if (!(email && password) ) {
+		let {  password, username } = req.body;
+		if (!(username && password) ) {
 			return res
 				.status(400)
 				.json({ success: false, message: 'All inputs are required' });
 		}
-		await Admin.findOne({ email } ).then(
+		await Admin.findOne({ username } ).then(
 			async (response) => {
 				if (
 					response &&
@@ -190,8 +190,9 @@ export async function login(req, res, next) {
 					const token = jwt.sign(
 						{
 							user_id: response._id,
-							email: response.email,
-							role: response.role,
+							// email: response.email,
+              username: response.username
+							// role: response.role,
 						},
 						process.env.TOKEN_KEY,
 						{ expiresIn: '5h' },

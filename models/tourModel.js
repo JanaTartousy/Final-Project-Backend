@@ -8,12 +8,7 @@ const tourSchema = new Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Admin',
     },
-    user_id: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        },
-    ],
+    
     title: {
       type: String,
       trim: true,
@@ -59,9 +54,9 @@ const tourSchema = new Schema(
 tourSchema.plugin(mongoosePaginate);
 
 tourSchema.pre(['find', 'findOne', 'save', 'create'], function () {
-	this.populate(['admin_id', 'user_id']);
+	this.populate(['admin_id']);
 });
 
 const TourModel = model("Tour", tourSchema);
-TourModel.paginate().then({});
+// TourModel.paginate().then({});
 export default TourModel;
