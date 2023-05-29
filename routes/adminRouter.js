@@ -1,7 +1,7 @@
 import express from "express";
 import {
-  // getAllAdmins,
-  // getAdminById,
+  getAllAdmins,
+  getAdminById,
   updateAdmin,
   deleteAdmin,
   login,
@@ -12,10 +12,10 @@ import { admin, superAdmin } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET /admins
-// router.get("/", admin, superAdmin, getAllAdmins);
+router.get("/", admin, superAdmin, getAllAdmins);
 
 // GET /admins/:adminId
-// router.get("/:adminId", admin, superAdmin, getAdminById);
+router.get("/:adminId", admin, superAdmin, getAdminById);
 
 // PUT /admins/:adminId
 router.put("/:adminId", admin, superAdmin, updateAdmin);
