@@ -4,45 +4,45 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 
 // get all admins and super admin
-export async function getAllAdmins(req, res, next) {
-  try {
-    const { page, limit } = req.query;
-    const options = {
-      page: parseInt(page, 10) || 1,
-      limit: parseInt(limit, 10) || 10,
-    };
-    await Admin.paginate({}, options)
-      .then((response) => res.status(200).json({ success: true, response }))
-      .catch((err) => res.status(404).json({ success: false, err }));
-  } catch (err) {
-    return next(err);
-  }
-}
+// export async function getAllAdmins(req, res, next) {
+//   try {
+//     const { page, limit } = req.query;
+//     const options = {
+//       page: parseInt(page, 10) || 1,
+//       limit: parseInt(limit, 10) || 10,
+//     };
+//     await Admin.paginate({}, options)
+//       .then((response) => res.status(200).json({ success: true, response }))
+//       .catch((err) => res.status(404).json({ success: false, err }));
+//   } catch (err) {
+//     return next(err);
+//   }
+// }
 
-// get admin by id
-export async function getAdminById(req, res, next) {
-  try {
-    const { adminId } = req.params;
-    await Admin.findById(adminId)
-      .then((response) => {
-        if (response) {
-          response.password = undefined;
-          res.status(200).json({
-            success: true,
-            response,
-            imagePath: `http://localhost:${process.env.PORT}/${response.image}`,
-          });
-        } else {
-          res.status(404).json({ success: false, message: "Admin not found" });
-        }
-      })
-      .catch((err) =>
-        res.status(404).json({ success: false, message: "Admin not found", err })
-      );
-  } catch (err) {
-    return next(err);
-  }
-}
+// // get admin by id
+// export async function getAdminById(req, res, next) {
+//   try {
+//     const { adminId } = req.params;
+//     await Admin.findById(adminId)
+//       .then((response) => {
+//         if (response) {
+//           response.password = undefined;
+//           res.status(200).json({
+//             success: true,
+//             response,
+//             imagePath: `http://localhost:${process.env.PORT}/${response.image}`,
+//           });
+//         } else {
+//           res.status(404).json({ success: false, message: "Admin not found" });
+//         }
+//       })
+//       .catch((err) =>
+//         res.status(404).json({ success: false, message: "Admin not found", err })
+//       );
+//   } catch (err) {
+//     return next(err);
+//   }
+// }
 
 // register a new admin account (as either admin or super admin)
 export async function register(req, res, next) {
