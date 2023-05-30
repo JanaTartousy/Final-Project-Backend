@@ -190,8 +190,7 @@ export async function login(req, res, next) {
 					const token = jwt.sign(
 						{
 							user_id: response._id,
-							// email: response.email,
-              username: response.username
+              username: response.username,
 							// role: response.role,
 						},
 						process.env.TOKEN_KEY,

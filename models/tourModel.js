@@ -58,5 +58,5 @@ tourSchema.pre(['find', 'findOne', 'save', 'create'], function () {
 });
 
 const TourModel = model("Tour", tourSchema);
-// TourModel.paginate().then({});
+TourModel.paginate().then({});
 export default TourModel;

@@ -30,9 +30,6 @@ export const createPost = async (req, res) => {
   });
 
   try {
-    if (req.file) {
-      post.image = "/uploads/" + req.file.filename;
-    }
 
     const newPost = await post.save();
     res.status(201).json(newPost);

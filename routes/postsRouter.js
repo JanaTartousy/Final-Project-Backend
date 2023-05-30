@@ -6,6 +6,7 @@ import {
 	updatePost,
 	deletePost,
 } from '../controllers/postsController.js';
+import uploadImage from '../middleware/imagesUpload.js';
 // import { admin, verifyUser } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -14,13 +15,13 @@ const router = express.Router();
 router.get('/', getAllPosts);
 
 // POST /posts
-router.post('/', createPost);
+router.post('/', uploadImage('Postimage'), createPost);
 
 // GET /posts/:postId
 router.get('/:postId', getPostById);
 
 // PUT /posts/:postId
-router.put('/:postId',  updatePost);
+router.put('/:postId', uploadImage('Postimage'), updatePost);
 
 // DELETE /posts/:postId
 router.delete('/:postId', deletePost);
