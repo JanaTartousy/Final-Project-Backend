@@ -14,8 +14,8 @@ export async function getAllAdmins(req, res, next) {
     await Admin.paginate({}, options)
       .then((response) => res.status(200).json({ success: true, response }))
       .catch((err) => res.status(404).json({ success: false, err }));
-  } catch (err) {
-    return next(err);
+  } catch (error) {
+    return next(error.message);
   }
 }
 

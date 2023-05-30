@@ -8,11 +8,11 @@ import {
   logout,
   register,
 } from "../controllers/adminController.js";
-import { admin, superAdmin } from "../middleware/auth.js";
+import { verifyUser, admin, superAdmin } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET /admins
-router.get("/", admin, superAdmin, getAllAdmins);
+router.get("/",verifyUser,admin,superAdmin, getAllAdmins);
 
 // GET /admins/:adminId
 router.get("/:adminId", admin, superAdmin, getAdminById);
