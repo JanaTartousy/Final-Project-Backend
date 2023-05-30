@@ -20,19 +20,21 @@ export const createPost = async (req, res) => {
   const {
     admin_id,
     title,
-    description
+    description,
+    image,
   } = req.body;
 
   const post = new Post({
     admin_id,
     title,
-    description
+    description,
+    image,
   });
 
   try {
 
     const newPost = await post.save();
-    res.status(201).json(newPost);
+    res.status(200).json(newPost);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
