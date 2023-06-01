@@ -19,9 +19,7 @@ const upload = multer({ storage });
 
 export default function uploadImage(imageName) {
   return function (req, res, next) {
-    // Use the `upload.none()` middleware for requests without an image file
 
-    // Use the `upload.single()` middleware for requests with an image file
     try {
       console.log("gg")
       upload.single(imageName)(req, res, function (err) {
