@@ -8,11 +8,12 @@ import {
   logout,
   register,
 } from "../controllers/adminController.js";
+import uploadImage from "../middleware/imagesUpload.js"
 import { verifyUser, admin, superAdmin } from "../middleware/auth.js";
 const router = express.Router();
 
 // GET /admins
-router.get("/",verifyUser,admin,superAdmin, getAllAdmins);
+router.get("/", verifyUser, admin, superAdmin, getAllAdmins);
 
 // GET /admins/:adminId
 router.get("/:adminId", admin, superAdmin, getAdminById);
@@ -24,7 +25,7 @@ router.put("/:adminId", admin, superAdmin, updateAdmin);
 router.delete("/:adminId", admin, superAdmin, deleteAdmin);
 
 // register a new admin account
-router.post("/register", register);
+router.post("/register", uploadImage("image"), register);
 
 // login
 router.post("/login", login);
