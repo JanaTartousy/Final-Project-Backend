@@ -50,6 +50,7 @@ export async function getAdminById(req, res, next) {
 export async function register(req, res, next) {
   try {
     let { username, email, password, image } = req.body;
+    let role;
     if (!(email && password)) {
       return res.status(400).json({
         success: false,
@@ -97,7 +98,7 @@ export async function register(req, res, next) {
         }
       });
   } catch (err) {
-    return next(err);
+    return res.status(500).json({ err: err.message });
   }
 }
 
