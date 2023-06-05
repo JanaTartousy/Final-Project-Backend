@@ -37,7 +37,9 @@ export async function getAdminById(req, res, next) {
         }
       })
       .catch((err) =>
-        res.status(404).json({ success: false, message: "Admin not found", err })
+        res
+          .status(404)
+          .json({ success: false, message: "Admin not found", err })
       );
   } catch (err) {
     return next(err);
@@ -47,17 +49,12 @@ export async function getAdminById(req, res, next) {
 // register a new admin account (as either admin or super admin)
 export async function register(req, res, next) {
   try {
-    let { username, email, password,image,role} = req.body;
+    let { username, email, password, image } = req.body;
     if (!(email && password)) {
       return res.status(400).json({
         success: false,
         message: "Email is required for registration",
       });
-    }
-    if (!req.user?.role === "superAdmin") {
-      // If the user making the request is a super admin, they can register a super admin
-      
-      role = "user";
     }
 
     // const hashedPassword = await bcrypt.hash(password, 10);
@@ -66,7 +63,8 @@ export async function register(req, res, next) {
       email,
       password,
       role,
-      image:image||"",
+      image: image || "",
+      role: "user",
     });
 
     await admin
@@ -85,9 +83,7 @@ export async function register(req, res, next) {
           { expiresIn: "5h" }
         );
         response.password = undefined;
-        res
-          .status(200)
-          .json({ success: true, response, token });
+        res.status(200).json({ success: true, response, token });
       })
       .catch((err) => {
         console.log(err);
@@ -112,7 +108,7 @@ export async function updateAdmin(req, res, next) {
     const { username, email, password } = req.body;
 
     const updates = {};
-    if (username) updates.username = username
+    if (username) updates.username = username;
     if (username) updates.username = username;
     if (email) updates.email = email;
     if (password) {
@@ -140,7 +136,9 @@ export async function updateAdmin(req, res, next) {
         }
       })
       .catch((err) =>
-        res.status(404).json({ success: false, message: "Admin not found", err })
+        res
+          .status(404)
+          .json({ success: false, message: "Admin not found", err })
       );
   } catch (err) {
     return next(err);
@@ -154,7 +152,9 @@ export const deleteAdmin = async (req, res, next) => {
   try {
     const admin = await Admin.findById(adminId);
     if (!admin) {
-      return res.status(404).json({ success: false, message: "Admin not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
     }
 
     if (admin.image) {
@@ -166,7 +166,9 @@ export const deleteAdmin = async (req, res, next) => {
 
     await Admin.findByIdAndRemove(adminId);
 
-    res.status(200).json({ success: true, message: "Admin deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Admin deleted successfully" });
   } catch (err) {
     return next(err);
   }
@@ -174,76 +176,71 @@ export const deleteAdmin = async (req, res, next) => {
 
 // Login
 export async function login(req, res, next) {
-	try {
-		let {  password, username } = req.body;
-		if (!(username && password) ) {
-			return res
-				.status(400)
-				.json({ success: false, message: 'All inputs are required' });
-		}
-		await Admin.findOne({ username } ).then(
-			async (response) => {
-				if (
-					response &&
-					(await bcrypt.compare(password, response.password))
-				) {
-					const token = jwt.sign(
-						{
-							user_id: response._id,
-              username: response.username,
-							// role: response.role,
-						},
-						process.env.TOKEN_KEY,
-						{ expiresIn: '5h' },
-					);
-					response.password = undefined;
-					// res.cookie("auth_token", token, { maxAge: 5 * 60 * 60 * 1000 });
-					res.status(200).json({ sucess: true, response, token });
-				} else {
-					res.status(400).json({
-						sucess: false,
-						err: 'Invalid Credentials',
-					});
-				}
-			},
-		);
-	} catch (err) {
-		return next(err);
-	}
+  try {
+    let { password, username } = req.body;
+    if (!(username && password)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All inputs are required" });
+    }
+    await Admin.findOne({ username }).then(async (response) => {
+      if (response && (await bcrypt.compare(password, response.password))) {
+        const token = jwt.sign(
+          {
+            user_id: response._id,
+            username: response.username,
+            // role: response.role,
+          },
+          process.env.TOKEN_KEY,
+          { expiresIn: "5h" }
+        );
+        response.password = undefined;
+        // res.cookie("auth_token", token, { maxAge: 5 * 60 * 60 * 1000 });
+        res.status(200).json({ sucess: true, response, token });
+      } else {
+        res.status(400).json({
+          sucess: false,
+          err: "Invalid Credentials",
+        });
+      }
+    });
+  } catch (err) {
+    return next(err);
+  }
 }
 
 // Logout
 export const logout = (req, res) => {
-
   res.status(200).json({ success: true, message: "Logout successful" });
-};import multer from "multer";
+};
+import multer from "multer";
 
 const imageStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads");
-    },
-    filename: function (req, file, cb) {
-        cb(
-            null,
-            file.fieldname + "-" + Date.now() + "." + file.mimetype.split("/")[1]
-        );
-    },
+  destination: function (req, file, cb) {
+    cb(null, "uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + "." + file.mimetype.split("/")[1]
+    );
+  },
 });
 
 const upload = multer({
-    storage: imageStorage,
-    fileFilter: function (req, file, callback) {
-        if (
-            file.mimetype == "image/png" ||
-            file.mimetype == "image/jpg" ||
-            file.mimetype == "image/jpeg"
-        ) {
-            callback(null, true);
-        } else {
-            console.log("only jpg, jpeg & png file supported");
-            callback(null, false);
-        }
-    },
+  storage: imageStorage,
+  fileFilter: function (req, file, callback) {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      callback(null, true);
+    } else {
+      console.log("only jpg, jpeg & png file supported");
+      callback(null, false);
+    }
+  },
 }).single("image");
 
 export default upload;
